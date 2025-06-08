@@ -1,6 +1,9 @@
 🌐 Konfigurasi Static Routing Mikrotik
 Konfigurasi static routing memungkinkan dua jaringan berbeda yang terhubung melalui dua router saling berkomunikasi dan mengakses internet dengan rute manual.
 
+🗺️ Topologi Jaringan
+<center><img src="https://drive.google.com/uc?export=view&id=1hlQprqRxytHN4sc1D3HawD0Ml5-GlmJE" width="600"></center>
+
 🧱 Konfigurasi IP Address pada Masing-masing Router
 🖥️ Router 1 (via Terminal/CLI)
 <pre> interface print ip address print /ip address add address=192.168.10.1/24 interface=ether2 /ip address add address=10.10.10.2/24 interface=ether3 </pre>
