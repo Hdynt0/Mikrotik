@@ -1,55 +1,88 @@
-🧰 Topologi Sederhana
+# 📘 Dokumentasi Konfigurasi DHCP pada MikroTik
+
+## 🧭 Pendahuluan: Apa Itu DHCP?
+
+**DHCP** (Dynamic Host Configuration Protocol) adalah protokol jaringan yang digunakan untuk memberikan alamat IP dan informasi jaringan lainnya secara otomatis kepada perangkat yang terhubung ke jaringan.
+
+---
+
+## 🔄 Perbedaan DHCP Server dan DHCP Client
+
+| Peran          | Fungsi                                                                 |
+|----------------|------------------------------------------------------------------------|
+| **DHCP Server** | Memberikan IP secara otomatis. Contoh: Router MikroTik memberikan IP ke komputer. |
+| **DHCP Client** | Menerima IP dari server. Contoh: MikroTik menerima IP dari modem ISP. |
+
+---
+
+## 🧰 Contoh Kasus
+
+### Topologi Sederhana
+
 <p align="center">
   <img src="https://drive.google.com/uc?export=view&id=1FMHp7jITZCj3q44OIzAjWgVY7Q2fAgSk" alt="Topologi Jaringan" width="600"/>
 </p>
 
-⚙️ Konfigurasi Dasar Router A (Sebagai DHCP Server)
+---
 
-Setting IP Address
-<pre>/ip address add address="ip/24" interface="ke isp" </pre>
-<pre>/ip address add address="ip/24" interface=ether2 </pre>
-<pre>/ip address add address="ip/24" interface=ether3</pre>
+## ⚙️ Konfigurasi Dasar **Router A** (Sebagai DHCP Server)
 
-Setting Default Route (Gateway)
-<pre>/ip route add dst-address=0.0.0.0/0 gateway="dari isp"</pre>
-
-Setting DNS
-<pre>/ip dns set servers=8.8.8.8,8.8.4.4 allow-remote-requests=yes</pre>
-
-4. Setting Firewall NAT
-<pre>/ip firewall nat add chain=srcnat out-interface="ke isp" action=masquerade</pre>
-
-5. Tes Koneksi Internet
-<pre>ping google.com</pre>
-
-📡 Konfigurasi DHCP Server di Router A
-GUI: IP -> DHCP Server -> DHCP Setup
-
+### 1. Setting IP Address
+```shell
+/ip address add address=<IP>/24 interface=ether1  # Interface ke ISP
+/ip address add address=<IP>/24 interface=ether2  # Ke jaringan internal
+/ip address add address=<IP>/24 interface=ether3  # Ke jaringan client
+```
+### 2. Setting Default Route (Gateway)
+```
+/ip route add dst-address=0.0.0.0/0 gateway=<IP dari ISP>
+```
+### 3. Setting DNS
+```
+/ip dns set servers=8.8.8.8 allow-remote-requests=yes
+```
+### 4. Setting Firewall NAT
+```
+/ip firewall nat add chain=srcnat out-interface=ether1 action=masquerade
+```
+### 5. Tes Koneksi Internet
+```
+ping google.com
+```
+## 📡 Konfigurasi DHCP Server di Router A
+Melalui GUI:
+IP -> DHCP Server -> DHCP Setup
 Langkah-langkah:
-Klik tombol "DHCP Setup".
-Pilih interface: ether3.
-DHCP Address Space: 192.168.2.0/24 (otomatis).
-Gateway: 192.168.2.1 (otomatis).
-Address Pool: 192.168.2.2 - 192.168.2.254.
-DNS Server: 8.8.8.8.
-Lease Time: 1d.
+- Klik tombol "DHCP Setup".
+- Pilih interface: ether3.
+- DHCP Address Space: contoh 192.168.2.0/24 (otomatis).
+- Gateway: contoh 192.168.2.1 (otomatis).
+- Address Pool: contoh 192.168.2.2 - 192.168.2.254.
+- DNS Server: contoh 8.8.8.8.
+- Lease Time: 1d.
 
-📥 Konfigurasi DHCP Client di Router B
-1. Ubah Nama Router (Opsional)
-<pre>/system identity set name="MikroTik B"</pre>
-2. Tambahkan DHCP Client
-<pre>/ip dhcp-client add interface=ether1 use-peer-dns=yes use-peer-ntp=yes add-default-route=yes</pre>
-Gantilah ether1 jika nama interface berbeda.
+## 📥 Konfigurasi DHCP Client di Router B
+### 1. Ubah Nama Router (Opsional)
+```
+/system identity set name="MikroTik B"
+```
+### 2. Tambahkan DHCP Client
+```
+/ip dhcp-client add interface=ether1 use-peer-dns=yes use-peer-ntp=yes add-default-route=yes
+```
+Gantilah ether1 jika nama interfacenya berbeda.
 
-3. Verifikasi IP Address
-<pre>/ip address print</pre>
-Cari IP dengan flag D (Dynamic) untuk memastikan DHCP Client sudah aktif dan mendapatkan IP.
+### 3. Verifikasi IP Address
+```
+/ip address print
+```
+Cari IP yang memiliki flag D (Dynamic) untuk memastikan DHCP Client sudah aktif dan berhasil menerima IP.
 
-✅ Hasil Akhir
+## ✅ Hasil Akhir
 Router A:
-Mendapat IP dari ISP secara statis.
-Menyediakan IP otomatis ke client melalui DHCP.
-Menyediakan akses internet dan DNS.
+Mendapat IP dari ISP secara manual/statis.
+Memberikan IP ke client secara otomatis via DHCP Server.
+Menyediakan akses internet dan DNS ke jaringan lokal.
 
 Router B:
-Mendapat IP, DNS, dan gateway secara otomatis dari Router A via DHCP Client.
+Mendapatkan IP, DNS, dan gateway secara otomatis dari Router A melalui DHCP Client.
