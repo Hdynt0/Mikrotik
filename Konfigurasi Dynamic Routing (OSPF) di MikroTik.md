@@ -27,12 +27,39 @@ Ping ke IP router yang tidak langsung terhubung → Gagal, karena belum ada rute
 
 🔁 Konfigurasi OSPF
 Di setiap router:
-
+untuk router versi lama
 Masuk ke Routing > OSPF
 
 Pilih tab Networks
 
 Klik tombol + dan tambahkan network ID berikut dengan Area: backbone
+
+
+untuk versi baru
+
+Buka tab Areas:
+Klik tab Areas di menu OSPF (lihat bar atas: Instances | Interface Templates | Interfaces | Areas ...)
+
+Klik tombol + (add)
+
+2. Isi sebagai berikut:
+Name: backbone
+
+Area ID: 0.0.0.0 (ini penting karena backbone = area 0)
+
+Instance: Pilih instance yang sudah kamu buat (biasanya default)
+
+3. Klik OK
+
+Masuk ke tab Interface Templates, lalu:
+
+Tambahkan interface yang punya IP 192.168.1.x
+
+Tambahkan interface yang punya IP 20.20.20.x
+
+Tambahkan interface yang punya IP 10.10.10.x
+
+Pilih Area: backbone, dan Instance sesuai yang kamu buat
 
 Router1:
 
